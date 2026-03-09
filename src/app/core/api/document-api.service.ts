@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { PageDto } from '../dto/page.dto';
 import { DocumentDto } from '../dto';
 
 @Injectable({ providedIn: 'root' })

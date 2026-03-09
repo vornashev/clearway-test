@@ -41,7 +41,7 @@ export class DocumentViewerComponent {
       name: doc.name,
       pages: doc.pages.map(page => ({
         ...page,
-        annotations: this.annotationService.getListByPageNumber(page.number),
+        annotations: this.annotationService.getPageAnnotations(page.number),
       })),
     };
 

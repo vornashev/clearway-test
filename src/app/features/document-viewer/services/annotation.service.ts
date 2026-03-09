@@ -1,12 +1,13 @@
 import { Injectable, signal } from '@angular/core';
+
 import { Annotation } from '../../../core/models/annotation.model';
 import { Position } from '../../../core/models/position.model';
 
 @Injectable({ providedIn: 'root' })
 export class AnnotationService {
-  private readonly store = signal<Record<number, Annotation[]>>({});
+  readonly store = signal<Record<number, Annotation[]>>({});
 
-  getListByPageNumber(pageNumber: number) {
+  getPageAnnotations(pageNumber: number) {
     return this.store()[pageNumber] ?? [];
   }
 

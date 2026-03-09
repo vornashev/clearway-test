@@ -19,7 +19,6 @@ import { Annotation } from '../../../../core/models/annotation.model';
 import { AnnotationComponent } from '../annotation/annotation.component';
 import { AnnotationService } from '../../services/annotation.service';
 import { ZoomImageService } from '../../services/zoom-image.service';
-import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-document-page',
@@ -29,7 +28,6 @@ import { NgOptimizedImage } from '@angular/common';
     DraggableDirective,
     AddAnnotationComponent,
     AnnotationComponent,
-    NgOptimizedImage,
   ],
   templateUrl: './document-page.component.html',
   styleUrl: './document-page.component.scss',
@@ -45,7 +43,7 @@ export class DocumentPageComponent {
 
   readonly pageNumber = computed(() => this.page().number);
   readonly annotationList = computed(
-    () => this.annotationService.getListByPageNumber(this.pageNumber()) ?? []
+    () => this.annotationService.store()[this.pageNumber()] ?? []
   );
 
   saveAnnotation(result: AddAnnotationResult) {

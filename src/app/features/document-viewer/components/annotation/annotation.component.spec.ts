@@ -13,6 +13,7 @@ describe('AnnotationComponent', () => {
 
     fixture = TestBed.createComponent(AnnotationComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('data', {});
     fixture.detectChanges();
   });
 
