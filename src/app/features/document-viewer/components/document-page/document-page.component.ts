@@ -7,18 +7,19 @@ import {
   signal,
 } from '@angular/core';
 
-import { PageDto } from '../../models';
+import { PageDto } from '../../../../core/dto';
 import { ZoomImageDirective } from '../../directives/zoom-image.directive';
 import { DraggableDirective } from '../../directives/draggable.directive';
 import {
   AddAnnotationComponent,
   AddAnnotationResult,
 } from '../add-annotation/add-annotation.component';
-import { Position } from '../../models/position.model';
-import { Annotation } from '../../models/annotation.model';
+import { Position } from '../../../../core/models/position.model';
+import { Annotation } from '../../../../core/models/annotation.model';
 import { AnnotationComponent } from '../annotation/annotation.component';
 import { AnnotationService } from '../../services/annotation.service';
 import { ZoomImageService } from '../../services/zoom-image.service';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-document-page',
@@ -28,13 +29,11 @@ import { ZoomImageService } from '../../services/zoom-image.service';
     DraggableDirective,
     AddAnnotationComponent,
     AnnotationComponent,
+    NgOptimizedImage,
   ],
   templateUrl: './document-page.component.html',
   styleUrl: './document-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '(dblclick)': 'addAnnotation($event)',
-  },
 })
 export class DocumentPageComponent {
   readonly page = input.required<PageDto>();
@@ -65,7 +64,7 @@ export class DocumentPageComponent {
   }
 
   addAnnotation(event: MouseEvent) {
-    if (this.addPosition()) {
+    if (this.addPosition() || event.target !== event.currentTarget) {
       return;
     }
     const { offsetX, offsetY } = event;

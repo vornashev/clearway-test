@@ -2,14 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
   input,
   output,
 } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
-import { Annotation } from '../../models/annotation.model';
-import { ZoomImageService } from '../../services/zoom-image.service';
+import { Annotation } from '../../../../core/models/annotation.model';
 
 @Component({
   selector: 'app-annotation',

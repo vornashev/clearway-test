@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Position } from '../../models/position.model';
+import { Position } from '../../../../core/models/position.model';
 import { MatIconModule } from '@angular/material/icon';
 
 export interface AddAnnotationResult {

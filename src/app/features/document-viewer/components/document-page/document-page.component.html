@@ -1,7 +1,7 @@
 @let position = addPosition();
 @let annotations = annotationList();
 
-<img [src]="page().imageUrl" appZoomImage />
+<img [src]="page().imageUrl" appZoomImage (dblclick)="addAnnotation($event)" />
 
 @if (position) {
   <app-add-annotation
@@ -15,6 +15,7 @@
   <app-annotation
     [zoom]="zoomService.zoom()"
     appDraggable
+    [appDraggableZoom]="zoomService.zoom()"
     [data]="annotation"
     (deleted)="deleteAnnotation(annotation)"
     (positionChange)="updateAnnotation(annotation, $event)" />

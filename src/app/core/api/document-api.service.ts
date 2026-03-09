@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { PageDto } from '../../models';
+import { PageDto } from '../dto/page.dto';
+import { DocumentDto } from '../dto';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentApiService {
   private readonly http = inject(HttpClient);
 
-  getListById(id: number | string): Observable<PageDto> {
-    return this.http.get<PageDto>(`api/${id}.json`);
+  getById(id: number | string): Observable<DocumentDto> {
+    return this.http.get<DocumentDto>(`api/${id}.json`);
   }
 }

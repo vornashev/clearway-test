@@ -8,12 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute } from '@angular/router';
-import { DocumentDto } from '../../models';
+import { DocumentDto } from '../../../../core/dto';
 import { ZoomImageService } from '../../services/zoom-image.service';
-import { PercentagePipe } from '../../pipes/percentage.pipe/percentage.pipe';
+import { PercentagePipe } from '../../../../shared/pipes/percentage.pipe';
 import { DocumentPageComponent } from '../document-page/document-page.component';
 import { AnnotationService } from '../../services/annotation.service';
-import { DocumentModel } from '../../models/document.model';
+import { DocumentModel } from '../../../../core/models/document.model';
 
 @Component({
   selector: 'app-document-viewer',

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { Annotation } from '../models/annotation.model';
-import { Position } from '../models/position.model';
+import { Annotation } from '../../../core/models/annotation.model';
+import { Position } from '../../../core/models/position.model';
 
 @Injectable({ providedIn: 'root' })
 export class AnnotationService {

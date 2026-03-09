@@ -1,6 +1,6 @@
-import { Directive, ElementRef, inject, output } from '@angular/core';
+import { Directive, ElementRef, inject, input, output } from '@angular/core';
 
-import { Position } from '../models/position.model';
+import { Position } from '../../../core/models/position.model';
 
 @Directive({
   selector: '[appDraggable]',
@@ -10,6 +10,7 @@ import { Position } from '../models/position.model';
   },
 })
 export class DraggableDirective {
+  readonly appDraggableZoom = input<number>(1);
   readonly positionChange = output<Position>();
 
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -58,7 +59,9 @@ export class DraggableDirective {
 
     this.isDragging = false;
 
-    this.positionChange.emit(this.calcPosition(event));
+    const zoom = this.appDraggableZoom();
+    const { x, y } = this.calcPosition(event);
+    this.positionChange.emit({ x: x / zoom, y: y / zoom });
 
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
