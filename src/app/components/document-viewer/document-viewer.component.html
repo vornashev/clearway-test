@@ -5,12 +5,11 @@
     <button (click)="zoomImageService.zoomIn()">+</button>
     <button (click)="zoomImageService.zoomOut()">-</button>
     <button (click)="viewResult()">Save</button>
-
   </div>
 </div>
 
 <div class="container">
   @for (page of pageList(); track page.number) {
-  <app-document-page [page]="page" />
+    <app-document-page [page]="page" />
   }
 </div>

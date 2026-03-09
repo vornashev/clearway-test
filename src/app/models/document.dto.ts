@@ -1,6 +1,6 @@
-import { PageDto } from "./page.dto";
+import { PageDto } from './page.dto';
 
 export interface DocumentDto {
-	name: string;
-	pages: PageDto[];
+  name: string;
+  pages: PageDto[];
 }

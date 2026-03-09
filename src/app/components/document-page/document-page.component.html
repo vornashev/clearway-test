@@ -4,11 +4,18 @@
 <img [src]="page().imageUrl" appZoomImage />
 
 @if (position) {
-<app-add-annotation [position]="position" (added)="saveAnnotation($event)" (closed)="addPosition.set(null)" />
+  <app-add-annotation
+    [zoom]="zoomService.zoom()"
+    [position]="position"
+    (added)="saveAnnotation($event)"
+    (closed)="addPosition.set(null)" />
 }
 
-
 @for (annotation of annotations; track annotation.id) {
-<app-annotation appDraggable [data]="annotation" (deleted)="deleteAnnotation(annotation)"
-  (positionChange)="updateAnnotation(annotation, $event)" />
+  <app-annotation
+    [zoom]="zoomService.zoom()"
+    appDraggable
+    [data]="annotation"
+    (deleted)="deleteAnnotation(annotation)"
+    (positionChange)="updateAnnotation(annotation, $event)" />
 }

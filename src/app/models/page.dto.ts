@@ -1,4 +1,4 @@
 export interface PageDto {
-	number: number;
-	imageUrl: string;
+  number: number;
+  imageUrl: string;
 }

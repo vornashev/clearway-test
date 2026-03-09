@@ -1,9 +1,12 @@
+@let text = data().text;
+@let imageUrl = data().imageUrl;
+
 <div class="annotation">
-  @if (text()) {
-    <div class="annotation__text">{{ text() }}</div>
+  @if (text) {
+    <div class="annotation__text">{{ text }}</div>
   }
-  @if (imageUrl()) {
-    <img [src]="imageUrl()" class="annotation__image" />
+  @if (imageUrl) {
+    <img [src]="imageUrl" class="annotation__image" />
   }
   <button class="close" (click)="deleteAnnotation($event)">
     <mat-icon fontIcon="close"></mat-icon>

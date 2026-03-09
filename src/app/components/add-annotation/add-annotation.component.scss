@@ -58,7 +58,7 @@
   border-radius: 8px;
   padding: 6px 8px;
 
-  input[type="text"] {
+  input[type='text'] {
     border: none;
     outline: none;
     font-size: 14px;
@@ -86,7 +86,9 @@
   background-color: transparent;
   color: oklch(40% 0 0);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background-color: oklch(95% 0 0);
