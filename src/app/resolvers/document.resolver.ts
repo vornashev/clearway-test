@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 
-import { DocumentApiService } from "../services/document-api.service";
+import { DocumentApiService } from "../services/api/document-api.service";
 import { PageDto } from "../models";
 
 export const documentResolver: ResolveFn<PageDto> = (

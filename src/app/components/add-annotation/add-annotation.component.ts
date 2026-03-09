@@ -4,14 +4,21 @@ import {
 	computed,
 	input,
 	output,
+	signal,
 } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Position } from "../../models/position.model";
+import { MatIconModule } from "@angular/material/icon";
+
+export interface AddAnnotationResult {
+	text: string;
+	imageUrl?: string;
+}
 
 @Component({
 	selector: "app-add-annotation",
 	standalone: true,
-	imports: [ReactiveFormsModule],
+	imports: [ReactiveFormsModule, MatIconModule],
 	templateUrl: "./add-annotation.component.html",
 	styleUrl: "./add-annotation.component.scss",
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,20 +30,33 @@ import { Position } from "../../models/position.model";
 export class AddAnnotationComponent {
 	readonly position = input<Position>({ x: 0, y: 0 });
 
-	readonly added = output<string>();
+	readonly added = output<AddAnnotationResult>();
 	readonly closed = output();
 
 	readonly positionX = computed(() => this.position().x);
 	readonly positionY = computed(() => this.position().y);
 
 	readonly textControl = new FormControl("");
+	readonly imageUrl = signal<string | undefined>(undefined);
+
+	onFileChange(event: Event) {
+		const file = (event.target as HTMLInputElement).files?.[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			this.imageUrl.set(reader.result as string);
+		};
+		reader.readAsDataURL(file);
+	}
 
 	save(event: MouseEvent | Event) {
 		event.stopPropagation();
-		const text = this.textControl.value;
+		const text = this.textControl.value?.trim();
+		const imageUrl = this.imageUrl();
 
-		if (text) {
-			this.added.emit(text);
+		if (text || imageUrl) {
+			this.added.emit({ text: text ?? "", imageUrl });
 		}
 	}
 

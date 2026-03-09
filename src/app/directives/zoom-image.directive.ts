@@ -41,6 +41,7 @@ export class ZoomImageDirective implements AfterViewInit {
 			);
 		}
 	}
+
 	renderByZoom(zoom: number) {
 		if (this.cacheWidth) {
 			const newWidth = this.cacheWidth * zoom;

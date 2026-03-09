@@ -1,18 +1,35 @@
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { Annotation } from "../models/annotation.model";
 import { Position } from "../models/position.model";
 
 @Injectable({ providedIn: "root" })
 export class AnnotationService {
-	// readonly map = new Map<number, Annotation>();
+	readonly store = signal<Record<number, Annotation[]>>({});
 
-	add(newAnnotation: Annotation) {
-		// this.map.set(newAnnotation.pageNumber, newAnnotation);
+  getListByPageNumber(pageNumber: number) {
+    return this.store()[pageNumber] ?? []
+  }
+
+	add(pageNumber: number, newAnnotation: Annotation) {
+		this.store.update((store) => ({
+			...store,
+			[pageNumber]: [...(store[pageNumber] ?? []), newAnnotation],
+		}));
 	}
 
-	delete(id: string) {
-		// this.map.set(newAnnotation.pageNumber, newAnnotation);
+	delete(pageNumber: number, id: string) {
+		this.store.update((store) => ({
+			...store,
+			[pageNumber]: (store[pageNumber] ?? []).filter((a) => a.id !== id),
+		}));
 	}
 
-	move(id: string, position: Position) {}
+	move(pageNumber: number, id: string, position: Position) {
+		this.store.update((store) => ({
+			...store,
+			[pageNumber]: (store[pageNumber] ?? []).map((a) =>
+				a.id === id ? { ...a, ...position } : a,
+			),
+		}));
+	}
 }

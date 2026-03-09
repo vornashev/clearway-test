@@ -1,10 +1,10 @@
 <div class="header">
   <div class="header__title">{{ documentName() }}</div>
   <div class="header__actions">
-    {{ zoomImageService.zoom() | percentage }}
+    <div class="zoom-info">{{ zoomImageService.zoom() | percentage }}</div>
     <button (click)="zoomImageService.zoomIn()">+</button>
     <button (click)="zoomImageService.zoomOut()">-</button>
-    <button>Save</button>
+    <button (click)="viewResult()">Save</button>
 
   </div>
 </div>

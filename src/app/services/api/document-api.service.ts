@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
-import { PageDto } from "../models";
+import { PageDto } from "../../models";
 
 @Injectable({ providedIn: "root" })
 export class DocumentApiService {

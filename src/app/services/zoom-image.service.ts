@@ -1,6 +1,11 @@
 import { DOCUMENT } from "@angular/common";
 import { inject, Injectable, signal } from "@angular/core";
 
+const ZOOM_OPTIONS = {
+  MAX: 2,
+  MIN: 0.1
+}
+
 @Injectable({ providedIn: "root" })
 export class ZoomImageService {
 	private readonly document = inject(DOCUMENT);
@@ -15,10 +20,14 @@ export class ZoomImageService {
 	}
 
 	zoomIn() {
-		this.zoom.update((value) => parseFloat((value + 0.1).toFixed(1)));
+    if (ZOOM_OPTIONS.MAX > this.zoom()) {
+      this.zoom.update((value) => parseFloat((value + 0.1).toFixed(1)));
+    }
 	}
 
 	zoomOut() {
-		this.zoom.update((value) => parseFloat((value - 0.1).toFixed(1)));
+    if (ZOOM_OPTIONS.MIN < this.zoom()) {
+		  this.zoom.update((value) => parseFloat((value - 0.1).toFixed(1)));
+    }
 	}
 }

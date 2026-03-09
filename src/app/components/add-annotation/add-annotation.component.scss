@@ -1,4 +1,101 @@
 :host {
-  display: block;
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  filter: drop-shadow(0 4px 12px oklch(0% 0 0 / 20%));
+  z-index: 10;
+}
+
+.file-input {
+  display: none;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 6px;
+
+  &__remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: oklch(20.5% 0 0);
+    color: #fff;
+    cursor: pointer;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.annotation-image {
+  display: block;
+  max-width: 200px;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 6px 8px;
+
+  input[type="text"] {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    width: 160px;
+    padding: 2px 4px;
+    border-bottom: 1.5px solid oklch(85% 0 0);
+    background: transparent;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-bottom-color: oklch(50.8% 0.118 165.612);
+    }
+  }
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: oklch(40% 0 0);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: oklch(95% 0 0);
+    color: oklch(20% 0 0);
+  }
+
+  &_icon {
+    height: 18px;
+    width: 18px;
+    font-size: 18px;
+  }
 }

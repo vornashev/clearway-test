@@ -9,5 +9,6 @@
 
 
 @for (annotation of annotations; track annotation.id) {
-<app-annotation [data]="annotation" (deleted)="deleteAnnotation(annotation)" />
+<app-annotation appDraggable [data]="annotation" (deleted)="deleteAnnotation(annotation)"
+  (positionChange)="updateAnnotation(annotation, $event)" />
 }
