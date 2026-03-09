@@ -1,0 +1,13 @@
+@let position = addPosition();
+@let annotations = annotationList();
+
+<img [src]="page().imageUrl" appZoomImage />
+
+@if (position) {
+<app-add-annotation [position]="position" (added)="saveAnnotation($event)" (closed)="addPosition.set(null)" />
+}
+
+
+@for (annotation of annotations; track annotation.id) {
+<app-annotation [data]="annotation" (deleted)="deleteAnnotation(annotation)" />
+}

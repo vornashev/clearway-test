@@ -1,0 +1,3 @@
+<input type="text" [formControl]="textControl" (keyup.enter)="save($event)" (keyup.esc)="closed.emit()">
+<button (click)="save($event)">Save</button>
+<button (click)="close($event)">X</button>
