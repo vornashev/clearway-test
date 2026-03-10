@@ -28,25 +28,23 @@ export class DocumentViewerComponent {
   private readonly annotationService = inject(AnnotationService);
   readonly zoomImageService = inject(ZoomImageService);
 
-  private data = toSignal<{ document: DocumentDto }>(this.route.data);
+  private data = toSignal(this.route.data);
 
-  readonly document = computed(() => this.data()?.document);
+  readonly document = computed(() => this.data()?.['document'] as DocumentDto);
 
   readonly documentName = computed(() => this.document()?.name);
   readonly pageList = computed(() => this.document()?.pages);
 
   viewResult() {
     const doc = this.document();
-    if (doc) {
-      const result: DocumentModel = {
-        name: doc.name,
-        pages: doc.pages.map(page => ({
-          ...page,
-          annotations: this.annotationService.getPageAnnotations(page.number),
-        })),
-      };
+    const result: DocumentModel = {
+      name: doc.name,
+      pages: doc.pages.map(page => ({
+        ...page,
+        annotations: this.annotationService.getPageAnnotations(page.number),
+      })),
+    };
 
-      console.log(result);
-    }
+    console.log(result);
   }
 }
