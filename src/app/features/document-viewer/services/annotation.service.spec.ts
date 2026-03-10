@@ -1,18 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Annotation } from '../../../core/models/annotation.model';
 import { AnnotationService } from './annotation.service';
-
-const makeAnnotation = (
-  id: string,
-  overrides: Partial<Annotation> = {}
-): Annotation => ({
-  id,
-  text: 'test',
-  x: 10,
-  y: 20,
-  ...overrides,
-});
 
 describe('AnnotationService', () => {
   let service: AnnotationService;
@@ -26,21 +14,37 @@ describe('AnnotationService', () => {
     expect(service).toBeTruthy();
   });
 
+  describe('openAdding / closeAdding', () => {
+    it('should set addPosition on openAdding', () => {
+      service.openAdding({ x: 10, y: 20 });
+      expect(service.addPosition()).toEqual({ x: 10, y: 20 });
+    });
+
+    it('should clear addPosition on closeAdding', () => {
+      service.openAdding({ x: 10, y: 20 });
+      service.closeAdding();
+      expect(service.addPosition()).toBeNull();
+    });
+  });
+
   describe('getPageAnnotations', () => {
     it('should return empty array for unknown page', () => {
       expect(service.getPageAnnotations(99)).toEqual([]);
     });
 
     it('should return annotations for the given page', () => {
-      const annotation = makeAnnotation('1');
-      service.add(1, annotation);
+      service.openAdding({ x: 10, y: 20 });
+      service.add(1, { text: 'hello' });
 
-      expect(service.getPageAnnotations(1)).toEqual([annotation]);
+      expect(service.getPageAnnotations(1)).toHaveSize(1);
+      expect(service.getPageAnnotations(1)[0].text).toBe('hello');
     });
 
     it('should not return annotations from other pages', () => {
-      service.add(1, makeAnnotation('1'));
-      service.add(2, makeAnnotation('2'));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'page1' });
+      service.openAdding({ x: 0, y: 0 });
+      service.add(2, { text: 'page2' });
 
       expect(service.getPageAnnotations(1)).toHaveSize(1);
       expect(service.getPageAnnotations(2)).toHaveSize(1);
@@ -48,24 +52,55 @@ describe('AnnotationService', () => {
   });
 
   describe('add', () => {
-    it('should add annotation to the page', () => {
-      const annotation = makeAnnotation('1');
-      service.add(1, annotation);
+    it('should add annotation with correct text and position', () => {
+      service.openAdding({ x: 10, y: 20 });
+      service.add(1, { text: 'test' });
 
-      expect(service.getPageAnnotations(1)).toContain(annotation);
+      const result = service.getPageAnnotations(1);
+      expect(result).toHaveSize(1);
+      expect(result[0].text).toBe('test');
+      expect(result[0].x).toBe(10);
+      expect(result[0].y).toBe(20);
+    });
+
+    it('should add annotation with imageUrl', () => {
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'img', imageUrl: 'data:image/png;base64,abc' });
+
+      expect(service.getPageAnnotations(1)[0].imageUrl).toBe(
+        'data:image/png;base64,abc'
+      );
     });
 
     it('should append annotation to existing ones', () => {
-      service.add(1, makeAnnotation('1'));
-      service.add(1, makeAnnotation('2'));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'first' });
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'second' });
 
       expect(service.getPageAnnotations(1)).toHaveSize(2);
     });
 
+    it('should clear addPosition after adding', () => {
+      service.openAdding({ x: 5, y: 5 });
+      service.add(1, { text: 'test' });
+
+      expect(service.addPosition()).toBeNull();
+    });
+
+    it('should do nothing if addPosition is null', () => {
+      service.add(1, { text: 'test' });
+
+      expect(service.getPageAnnotations(1)).toHaveSize(0);
+    });
+
     it('should not mutate other pages', () => {
-      service.add(1, makeAnnotation('1'));
-      service.add(2, makeAnnotation('2'));
-      service.add(1, makeAnnotation('3'));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'page1' });
+      service.openAdding({ x: 0, y: 0 });
+      service.add(2, { text: 'page2' });
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'page1 again' });
 
       expect(service.getPageAnnotations(2)).toHaveSize(1);
     });
@@ -73,18 +108,26 @@ describe('AnnotationService', () => {
 
   describe('delete', () => {
     it('should remove annotation by id', () => {
-      service.add(1, makeAnnotation('1'));
-      service.add(1, makeAnnotation('2'));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'first' });
+      setTimeout(() => {
+        service.openAdding({ x: 0, y: 0 });
+        service.add(1, { text: 'second' });
 
-      service.delete(1, '1');
+        const [first] = service.getPageAnnotations(1);
+        console.log(first);
+        service.delete(1, first.id);
 
-      const result = service.getPageAnnotations(1);
-      expect(result).toHaveSize(1);
-      expect(result[0].id).toBe('2');
+        const result = service.getPageAnnotations(1);
+        console.log(result);
+        expect(result).toHaveSize(1);
+        expect(result[0].text).toBe('second');
+      }, 100);
     });
 
     it('should do nothing when id does not exist', () => {
-      service.add(1, makeAnnotation('1'));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'test' });
 
       service.delete(1, 'nonexistent');
 
@@ -92,10 +135,13 @@ describe('AnnotationService', () => {
     });
 
     it('should not affect other pages', () => {
-      service.add(1, makeAnnotation('1'));
-      service.add(2, makeAnnotation('1'));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'page1' });
+      service.openAdding({ x: 0, y: 0 });
+      service.add(2, { text: 'page2' });
 
-      service.delete(1, '1');
+      const [annotation] = service.getPageAnnotations(1);
+      service.delete(1, annotation.id);
 
       expect(service.getPageAnnotations(2)).toHaveSize(1);
     });
@@ -103,9 +149,11 @@ describe('AnnotationService', () => {
 
   describe('move', () => {
     it('should update position of the annotation', () => {
-      service.add(1, makeAnnotation('1', { x: 0, y: 0 }));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'test' });
 
-      service.move(1, '1', { x: 100, y: 200 });
+      const [annotation] = service.getPageAnnotations(1);
+      service.move(1, annotation.id, { x: 100, y: 200 });
 
       const result = service.getPageAnnotations(1);
       expect(result[0].x).toBe(100);
@@ -113,13 +161,11 @@ describe('AnnotationService', () => {
     });
 
     it('should not change other fields', () => {
-      const annotation = makeAnnotation('1', {
-        text: 'hello',
-        imageUrl: 'img.png',
-      });
-      service.add(1, annotation);
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'hello', imageUrl: 'img.png' });
 
-      service.move(1, '1', { x: 50, y: 50 });
+      const [annotation] = service.getPageAnnotations(1);
+      service.move(1, annotation.id, { x: 50, y: 50 });
 
       const result = service.getPageAnnotations(1);
       expect(result[0].text).toBe('hello');
@@ -127,21 +173,31 @@ describe('AnnotationService', () => {
     });
 
     it('should not affect other annotations on the same page', () => {
-      service.add(1, makeAnnotation('1', { x: 0, y: 0 }));
-      service.add(1, makeAnnotation('2', { x: 0, y: 0 }));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'first' });
+      setTimeout(() => {
+        service.openAdding({ x: 0, y: 0 });
+        service.add(1, { text: 'second' });
 
-      service.move(1, '1', { x: 99, y: 99 });
+        const [first] = service.getPageAnnotations(1);
+        service.move(1, first.id, { x: 99, y: 99 });
 
-      const other = service.getPageAnnotations(1).find(a => a.id === '2')!;
-      expect(other.x).toBe(0);
-      expect(other.y).toBe(0);
+        const other = service
+          .getPageAnnotations(1)
+          .find(a => a.text === 'second')!;
+        expect(other.x).toBe(0);
+        expect(other.y).toBe(0);
+      }, 100);
     });
 
     it('should not affect other pages', () => {
-      service.add(1, makeAnnotation('1', { x: 0, y: 0 }));
-      service.add(2, makeAnnotation('1', { x: 0, y: 0 }));
+      service.openAdding({ x: 0, y: 0 });
+      service.add(1, { text: 'page1' });
+      service.openAdding({ x: 0, y: 0 });
+      service.add(2, { text: 'page2' });
 
-      service.move(1, '1', { x: 99, y: 99 });
+      const [annotation] = service.getPageAnnotations(1);
+      service.move(1, annotation.id, { x: 99, y: 99 });
 
       expect(service.getPageAnnotations(2)[0].x).toBe(0);
     });

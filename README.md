@@ -1,27 +1,60 @@
-# ClearwayTest
+# Тестовое Clearway - Приложение для просмотра документов и добавления аннотаций
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.1.
+Приложение для просмотра многостраничных документов с возможностью добавления, перемещения и удаления аннотаций, как в виде текста так и изображений.
 
-## Development server
+## Запуск
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+```bash
+npm install
+npm start
+```
 
-## Code scaffolding
+Откроется на `http://localhost:4200` и автоматически перенаправит на `/document/1`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## Архитектура
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```text
+src/app/
+├── core/               # Доменные модели, DTO, API-сервисы
+├── features/
+│   └── document-viewer/
+│       ├── components/ # UI-компоненты фичи
+│       ├── directives/ # DraggableDirective, ZoomImageDirective
+│       ├── resolvers/  # Предзагрузка документа (ResolveFn)
+│       ├── services/   # AnnotationService, ZoomImageService
+│       └── document-viewer.routes.ts
+└── shared/             # Переиспользуемые утилиты (PercentagePipe)
+```
 
-## Running unit tests
+**Управление состоянием:** только Angular Signals (`signal`, `computed`), никакого RxJS в компонентах и `async pipe`.
+Все компоненты standalone с `ChangeDetectionStrategy.OnPush`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## Плюсы архитектуры и структуры
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Структура проекта
 
-## Further help
+- Feature-based разбивка. Каждая фича самодостаточна: компоненты, директивы, сервисы и роутинг расположены рядом, не размазаны по глобальным папкам
+- Явное разделение `core` / `features` / `shared`. Понятно, где доменные модели, где фича-специфичный код, где переиспользуемые утилиты
+- `document-viewer.routes.ts` внутри фичи. Роутинг инкапсулирован, фичу можно перенести или переименовать без затрагивания `app.routes.ts`
+- Lazy loading через `loadChildren` + `loadComponent`. Фича не грузится до навигации, бандл разделён по умолчанию
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Angular-паттерны
+
+- Signals + `computed()` как единственный механизм состояния, без подписок, без `async pipe`, без ручной очистки
+- Все компоненты standalone с `OnPush`,  предсказуемое обнаружение изменений
+- Функциональный `inject()` вместо конструкторной инъекции
+- Функциональный resolver (`ResolveFn`) вместо класса
+- `DOCUMENT` injection token вместо прямого `window`,совместимость с SSR
+
+---
+
+
+# Функциональные плюсы реализации
+
+
+
+# Улучшения, которые можно было бы реализовать дополнительно
