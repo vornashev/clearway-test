@@ -50,9 +50,15 @@ describe('AnnotationService', () => {
     });
 
     it('should add annotation with imageUrl', () => {
-      service.add(1, { x: 0, y: 0 }, { text: 'img', imageUrl: 'data:image/png;base64,abc' });
+      service.add(
+        1,
+        { x: 0, y: 0 },
+        { text: 'img', imageUrl: 'data:image/png;base64,abc' }
+      );
 
-      expect(service.getPageAnnotations(1)[0].imageUrl).toBe('data:image/png;base64,abc');
+      expect(service.getPageAnnotations(1)[0].imageUrl).toBe(
+        'data:image/png;base64,abc'
+      );
     });
 
     it('should append annotation to existing ones', () => {
@@ -139,7 +145,9 @@ describe('AnnotationService', () => {
       const [first] = service.getPageAnnotations(1);
       service.move(1, first.id, { x: 99, y: 99 });
 
-      const other = service.getPageAnnotations(1).find(a => a.text === 'second')!;
+      const other = service
+        .getPageAnnotations(1)
+        .find(a => a.text === 'second')!;
       expect(other.x).toBe(0);
       expect(other.y).toBe(0);
     });

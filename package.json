@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "prettier": "prettier --write src"
+    "prettier": "prettier --write src",
+    "deploy": "ng deploy --repo=https://github.com/vornashev/clearway-test.git --name=\"vornashev\" --email=vornashev.dev@gmail.com --base-href=/clearway-test/ --dir=dist/clearway-test/browser"
   },
   "private": true,
   "dependencies": {

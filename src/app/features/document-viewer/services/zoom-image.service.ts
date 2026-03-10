@@ -1,4 +1,3 @@
-
 import { inject, Injectable, signal, DOCUMENT } from '@angular/core';
 
 const ZOOM_OPTIONS = {
