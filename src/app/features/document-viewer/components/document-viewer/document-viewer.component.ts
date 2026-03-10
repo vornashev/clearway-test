@@ -6,8 +6,8 @@ import {
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
-
 import { ActivatedRoute } from '@angular/router';
+
 import { DocumentDto } from '../../../../core/dto';
 import { ZoomImageService } from '../../services/zoom-image.service';
 import { PercentagePipe } from '../../../../shared/pipes/percentage.pipe';
@@ -28,23 +28,25 @@ export class DocumentViewerComponent {
   private readonly annotationService = inject(AnnotationService);
   readonly zoomImageService = inject(ZoomImageService);
 
-  private data = toSignal(this.route.data);
+  private data = toSignal<{ document: DocumentDto }>(this.route.data);
 
-  readonly document = computed(() => this.data()?.['document'] as DocumentDto);
+  readonly document = computed(() => this.data()?.document);
 
   readonly documentName = computed(() => this.document()?.name);
   readonly pageList = computed(() => this.document()?.pages);
 
   viewResult() {
     const doc = this.document();
-    const result: DocumentModel = {
-      name: doc.name,
-      pages: doc.pages.map(page => ({
-        ...page,
-        annotations: this.annotationService.getPageAnnotations(page.number),
-      })),
-    };
+    if (doc) {
+      const result: DocumentModel = {
+        name: doc.name,
+        pages: doc.pages.map(page => ({
+          ...page,
+          annotations: this.annotationService.getPageAnnotations(page.number),
+        })),
+      };
 
-    console.log(result);
+      console.log(result);
+    }
   }
 }
