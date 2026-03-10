@@ -9,39 +9,23 @@ export class AnnotationService {
   private readonly _store = signal<Record<number, Annotation[]>>({});
   readonly store = this._store.asReadonly();
 
-  readonly addPosition = signal<Position | null>(null);
-
   getPageAnnotations(pageNumber: number) {
     return this.store()[pageNumber] ?? [];
   }
 
-  openAdding(position: Position) {
-    this.addPosition.set(position);
-  }
+  add(pageNumber: number, position: Position, result: AddAnnotationResult) {
+    const newAnnotation: Annotation = {
+      id: Date.now().toString(),
+      text: result.text,
+      imageUrl: result.imageUrl,
+      x: position.x,
+      y: position.y,
+    };
 
-  closeAdding() {
-    this.addPosition.set(null);
-  }
-
-  add(pageNumber: number, result: AddAnnotationResult) {
-    const position = this.addPosition();
-
-    if (position) {
-      const newAnnotation: Annotation = {
-        id: Date.now().toString(),
-        text: result.text,
-        imageUrl: result.imageUrl,
-        x: position.x,
-        y: position.y,
-      };
-
-      this._store.update(store => ({
-        ...store,
-        [pageNumber]: [...(store[pageNumber] ?? []), newAnnotation],
-      }));
-
-      this.closeAdding();
-    }
+    this._store.update(store => ({
+      ...store,
+      [pageNumber]: [...(store[pageNumber] ?? []), newAnnotation],
+    }));
   }
 
   delete(pageNumber: number, id: string) {

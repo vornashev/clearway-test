@@ -39,7 +39,7 @@ export class DocumentPageComponent {
   private readonly annotationService = inject(AnnotationService);
   readonly zoomService = inject(ZoomImageService);
 
-  readonly addPosition = this.annotationService.addPosition;
+  readonly addPosition = signal<Position | null>(null);
 
   readonly pageNumber = computed(() => this.page().number);
   readonly annotationList = computed(
@@ -47,7 +47,12 @@ export class DocumentPageComponent {
   );
 
   saveAnnotation(result: AddAnnotationResult) {
-    this.annotationService.add(this.pageNumber(), result);
+    const position = this.addPosition();
+
+    if (position) {
+      this.annotationService.add(this.pageNumber(), position, result);
+      this.addPosition.set(null);
+    }
   }
 
   openAddAnnotation(event: MouseEvent) {
@@ -55,11 +60,11 @@ export class DocumentPageComponent {
       return;
     }
     const { offsetX, offsetY } = event;
-    this.annotationService.openAdding({ x: offsetX, y: offsetY });
+    this.addPosition.set({ x: offsetX, y: offsetY });
   }
 
   closeAddAnnotation() {
-    this.annotationService.closeAdding();
+    this.addPosition.set(null);
   }
 
   deleteAnnotation(annotation: Annotation) {
