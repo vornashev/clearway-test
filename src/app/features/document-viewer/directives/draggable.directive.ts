@@ -1,7 +1,7 @@
-import { Directive, ElementRef, inject, input, output } from '@angular/core';
+import { Directive, ElementRef, inject, input, output, DOCUMENT } from '@angular/core';
 
 import { Position } from '../../../core/models/position.model';
-import { DOCUMENT } from '@angular/common';
+
 
 @Directive({
   selector: '[appDraggable]',
